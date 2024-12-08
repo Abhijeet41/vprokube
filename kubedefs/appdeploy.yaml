@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vprapp
+  labels:
+    app: vprapp
+spec:
+  replicas: 1  # Number of Memcached pod replicas
+  selector:
+    matchLabels:
+      app: vprapp
+  template:
+    metadata:
+      labels:
+        app: vprapp
+    spec:
+      containers:
+      - name: vprapp
+        image: vprocontainers/vprofileapp  # Specify the Memcached container image
+        ports:
+        - name: vprapp-port
+          containerPort: 8080  # Tomcat default port
+      initContainers:
+        - name: init-mydb
+          image: busybox
+          command: ['sh', '-c', 'until nslookup vprodb.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for mydb; sleep 2; done;']
+        - name: init-memcache
+          image: busybox
+          command: ['sh', '-c', 'until nslookup vprocache01.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for mydb; sleep 2; done;']    
+        - name: init-rabbitmq
+          image: busybox
+          command: ['sh', '-c', 'until nslookup vpromq01.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for mydb; sleep 2; done;']       
+             

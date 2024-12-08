@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: tomcat-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /  # Rewrite the URL path to match the backend service
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: vprofile.devbytesschool.info  # The domain name for routing
+      http:
+        paths:
+          - path: /
+            pathType: Prefix  # Match any path starting with "/"
+            backend:
+              service:
+                name: vproapp-service  # Name of the backend service
+                port:
+                  number: 8080  # Port on the backend service

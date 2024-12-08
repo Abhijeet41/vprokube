@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: vprocache01
+spec:
+  selector:
+    app: vpromc  # Matches the pods with this label
+  ports:
+    - protocol: TCP
+      port: 11211  # Service port exposed to other resources in the cluster
+      targetPort: vpromc-port  # Port on the pod (container) 11211
+  type: ClusterIP  # Default service type

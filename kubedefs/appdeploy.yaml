@@ -20,6 +20,9 @@ spec:
         ports:
         - name: vprapp-port
           containerPort: 8080  # Tomcat default port
+          
+      #the main intention of this init container is to wait for the database to be up and running before starting the main application container.
+      #this is a workaround for the fact that the database is not ready when the application starts.    
       initContainers:
         - name: init-mydb
           image: busybox
